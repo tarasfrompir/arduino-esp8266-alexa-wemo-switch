@@ -14,7 +14,7 @@ void sendRelayState();
 const char* ssid = "************";  // CHANGE: Wifi name
 const char* password = "********";  // CHANGE: Wifi password 
 String friendlyName = "tv";        // CHANGE: Alexa device name
-const int relayPin = 5;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
+const int relayPin = LED_BUILTIN;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
 
 WiFiUDP UDP;
 IPAddress ipMulti(239, 255, 255, 250);
@@ -172,7 +172,12 @@ void respondToSearch() {
 void startHttpServer() {
     HTTP.on("/index.html", HTTP_GET, [](){
       Serial.println("Got Request index.html ...\n");
-      HTTP.send(200, "text/plain", "Hello World!");
+      HTTP.send(200, "text/plain", "This is Belkin switch for Arduino with UPNP control");
+        String statrespone = "off"; 
+        if (relayState) {
+          statrespone = "on"; 
+        }
+        HTTP.send(200, "text/plain", "The switch status " + statrespone);
     });
 
     HTTP.on("/upnp/control/basicevent1", HTTP_POST, []() {
