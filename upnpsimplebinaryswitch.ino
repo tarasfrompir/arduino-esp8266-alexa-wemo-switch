@@ -11,10 +11,11 @@ void turnOnRelay();
 void turnOffRelay();
 void sendRelayState();
 
-const char* ssid = "************";  // CHANGE: Wifi name
-const char* password = "********";  // CHANGE: Wifi password 
+const char* ssid = "homewifihome";  // CHANGE: Wifi name
+const char* password = "homewifi1234567890";  // CHANGE: Wifi password 
 String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
+String answer = "This is simple switch for Arduino with UPNP control";        // CHANGE answer
 
 WiFiUDP UDP;
 IPAddress ipMulti(239, 255, 255, 250);
@@ -88,7 +89,7 @@ void loop() {
 
         if(request.indexOf("M-SEARCH") >= 0) {
             // Issue https://github.com/kakopappa/arduino-esp8266-alexa-multiple-wemo-switch/issues/22 fix
-             if((request.indexOf("urn:schemas-upnp-org:device:BinaryLight:*") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
+             if((request.indexOf("urn:schemas-upnp-org:device:BinaryLight:1") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
                 Serial.println("Responding to search request ...");
                 respondToSearch();
              }
@@ -132,8 +133,8 @@ void respondToSearch() {
          "EXT:\r\n"
          "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
          "SERVER: ESP_8266, UPnP/1.0, Unspecified\r\n"
-         "ST: urn:schemas-upnp-org:device:BinaryLight:*\r\n"
-         "USN: uuid:" + persistent_uuid + "::urn:Belkin:device:**\r\n"
+         "ST: urn:schemas-upnp-org:device:BinaryLight:1\r\n"
+         "USN: uuid:" + persistent_uuid + "::urn:schemas-upnp-org:device:BinaryLight:1\r\n"
          "X-User-Agent: redsonic\r\n\r\n";
   
     UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
@@ -146,12 +147,11 @@ void respondToSearch() {
 void startHttpServer() {
     HTTP.on("/index.html", HTTP_GET, [](){
       Serial.println("Got Request index.html ...\n");
-      answer = "This is Belkin switch for Arduino with UPNP control";
         String statrespone = "off"; 
         if (relayState) {
           statrespone = "on"; 
         }
-      answer .= "The switch status " + statrespone;
+      answer = answer + "The switch status " + statrespone;
         HTTP.send(200, "text/plain", answer);
     });
 
