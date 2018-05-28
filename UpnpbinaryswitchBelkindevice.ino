@@ -11,8 +11,8 @@ void turnOnRelay();
 void turnOffRelay();
 void sendRelayState();
 
-const char* ssid = "************";  // CHANGE: Wifi name
-const char* password = "********";  // CHANGE: Wifi password 
+const char* ssid = "homewifihome";  // CHANGE: Wifi name
+const char* password = "homewifi1234567890";  // CHANGE: Wifi password 
 String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
 
@@ -256,7 +256,7 @@ void startHttpServer() {
                 "<modelNumber>3.1415</modelNumber>"
                 "<modelDescription>Belkin Plugin Socket 1.0</modelDescription>\r\n"
                 "<UDN>uuid:"+ persistent_uuid +"</UDN>"
-                "<serialNumber>"+serial+"</serialNumber>"
+                "<serialNumber>"+chipId+"</serialNumber>"
                 "<binaryState>0</binaryState>"
                 "<serviceList>"
                   "<service>"
