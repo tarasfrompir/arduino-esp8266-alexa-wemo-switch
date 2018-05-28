@@ -256,7 +256,7 @@ void startHttpServer() {
                      "<width>48</width>"
                      "<height>48</height>"
                      "<depth>24</depth>"
-                     "<url>https://github.com/tarasfrompir/esp8266-upnp-switch/blob/master/binary_switch.png</url>"
+                     "<url>https://raw.githubusercontent.com/tarasfrompir/esp8266-upnp-switch/master/binary_switch.png</url>"
                    "</icon>"
                  "</iconList>"
                 "<serviceList>"
