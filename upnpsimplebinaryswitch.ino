@@ -89,7 +89,7 @@ void loop() {
         String request = packetBuffer;
     
         if(request.indexOf("M-SEARCH") >= 0) {
-             if((request.indexOf("urn:schemas-upnp-org:device:**") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
+             if((request.indexOf("urn:schemas-upnp-org:device-1-0") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
                 Serial.println("Responding to search request ...");
                 respondToSearch();
              }
@@ -133,8 +133,8 @@ void respondToSearch() {
          "EXT:\r\n"
          "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
          "SERVER: ESP_8266, UPnP/1.0, Unspecified\r\n"
-         "ST: urn:schemas-upnp-org:device:**\r\n"
-         "USN: uuid:" + persistent_uuid + "::urn:schemas-upnp-org:device:**\r\n"
+         "ST: urn:schemas-upnp-org:device-1-0\r\n"
+         "USN: uuid:" + persistent_uuid + "::urn:schemas-upnp-org:device-1-0\r\n"
          "X-User-Agent: redsonic\r\n\r\n";
   
     UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
