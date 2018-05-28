@@ -187,7 +187,7 @@ void startHttpServer() {
     HTTP.on("/SwitchPower1.xml", HTTP_GET, [](){
       Serial.println(" ########## Responding to eventservice.xml ... ########\n");
       
-      String eventservice_xml = "<scpd xmlns=\"urn:schemas-upnp-org:device-1-0\">"
+      String eventservice_xml = "<scpd xmlns=\"urn:schemas-upnp-org:service:SwitchPower:1\">"
         "<actionList>"
           "<action>"
             "<name>SetBinaryState</name>"
@@ -366,7 +366,7 @@ void turnOnRelay() {
 
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
+      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:service:SwitchPower:1\">\r\n"
       "<BinaryState>1</BinaryState>\r\n"
       "</u:SetBinaryStateResponse>\r\n"
       "</s:Body> </s:Envelope>";
@@ -383,7 +383,7 @@ void turnOffRelay() {
 
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
+      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:service:SwitchPower:1\">\r\n"
       "<BinaryState>0</BinaryState>\r\n"
       "</u:SetBinaryStateResponse>\r\n"
       "</s:Body> </s:Envelope>";
@@ -398,7 +398,7 @@ void sendRelayState() {
   
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:GetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
+      "<u:GetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:service:SwitchPower:1\">\r\n"
       "<BinaryState>";
       
   body += (relayState ? "1" : "0");
