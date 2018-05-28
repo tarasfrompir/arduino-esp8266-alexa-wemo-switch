@@ -13,7 +13,7 @@ void sendRelayState();
 
 const char* ssid = "************";  // CHANGE: Wifi name
 const char* password = "********";  // CHANGE: Wifi password 
-String friendlyName = "tv";        // CHANGE: name
+String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
 
 WiFiUDP UDP;
