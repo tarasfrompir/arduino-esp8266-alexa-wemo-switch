@@ -172,12 +172,13 @@ void respondToSearch() {
 void startHttpServer() {
     HTTP.on("/index.html", HTTP_GET, [](){
       Serial.println("Got Request index.html ...\n");
-      HTTP.send(200, "text/plain", "This is Belkin switch for Arduino with UPNP control");
+      answer = "This is Belkin switch for Arduino with UPNP control";
         String statrespone = "off"; 
         if (relayState) {
           statrespone = "on"; 
         }
-        HTTP.send(200, "text/plain", "The switch status " + statrespone);
+      answer .= "The switch status " + statrespone;
+        HTTP.send(200, "text/plain", answer);
     });
 
     HTTP.on("/upnp/control/basicevent1", HTTP_POST, []() {
@@ -274,7 +275,7 @@ void startHttpServer() {
                 "<modelNumber>3.1415</modelNumber>"
                 "<modelDescription>Belkin Plugin Socket 1.0</modelDescription>\r\n"
                 "<UDN>uuid:"+ persistent_uuid +"</UDN>"
-                "<serialNumber>221517K0101769</serialNumber>"
+                "<serialNumber>+serial+</serialNumber>"
                 "<binaryState>0</binaryState>"
                 "<serviceList>"
                   "<service>"
