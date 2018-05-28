@@ -13,8 +13,8 @@ void sendRelayState();
 
 const char* ssid = "************";  // CHANGE: Wifi name
 const char* password = "********";  // CHANGE: Wifi password 
-String friendlyName = "tv";        // CHANGE: Alexa device name
-const int relayPin = LED_BUILTIN;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
+String friendlyName = "tv";        // CHANGE: name
+const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
 
 WiFiUDP UDP;
 IPAddress ipMulti(239, 255, 255, 250);
@@ -42,7 +42,7 @@ void setup() {
 
   // only proceed if wifi connection successful
   if(wifiConnected){
-    Serial.println("Ask Alexa to discover devices");
+    Serial.println("You can scan device");
     udpConnected = connectUDP();
     
     if (udpConnected){
@@ -338,7 +338,7 @@ boolean connectWifi(){
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
-    if (i > 10){
+    if (i > 20){
       state = false;
       break;
     }
