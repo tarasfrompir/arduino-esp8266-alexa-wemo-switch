@@ -95,7 +95,6 @@ void loop() {
         // Issue https://github.com/kakopappa/arduino-esp8266-alexa-wemo-switch/issues/24 fix
         if(request.indexOf("M-SEARCH") >= 0) {
             // Issue https://github.com/kakopappa/arduino-esp8266-alexa-multiple-wemo-switch/issues/22 fix
-            //if(request.indexOf("urn:Belkin:device:**") > 0) {
              if((request.indexOf("urn:Belkin:device:**") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
                 Serial.println("Responding to search request ...");
                 respondToSearch();
@@ -139,29 +138,11 @@ void respondToSearch() {
          "DATE: Fri, 15 Apr 2016 04:56:29 GMT\r\n"
          "EXT:\r\n"
          "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
-         "OPT: \"http://schemas.upnp.org/upnp/1/0/\"; ns=01\r\n"
-         "01-NLS: b9200ebb-736d-4b93-bf03-835149d13983\r\n"
-         "SERVER: Unspecified, UPnP/1.0, Unspecified\r\n"
+         "SERVER: ESP_8266, UPnP/1.0, Unspecified\r\n"
          "ST: urn:Belkin:device:**\r\n"
          "USN: uuid:" + persistent_uuid + "::urn:Belkin:device:**\r\n"
          "X-User-Agent: redsonic\r\n\r\n";
   
-    // Try changing to this if you have problems discovering
-    /* https://github.com/kakopappa/arduino-esp8266-alexa-wemo-switch/issues/26
-    String response =
-      "HTTP/1.1 200 OK\r\n"
-      "CACHE-CONTROL: max-age=86400\r\n"
-      "DATE: Fri, 15 Apr 2016 04:56:29 GMT\r\n"
-      "EXT:\r\n"
-      "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
-      "OPT: "http://schemas.upnp.org/upnp/1/0/\"; ns=01\r\n"
-      "01-NLS: b9200ebb-736d-4b93-bf03-835149d13983\r\n"
-      "SERVER: Unspecified, UPnP/1.0, Unspecified\r\n"
-      "ST: ssdp:all\r\n"
-      "USN: uuid:" + persistent_uuid + "::upnp:rootdevice\r\n"
-      "X-User-Agent: redsonic\r\n\r\n";
-    */
-
     UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
     UDP.write(response.c_str());
     UDP.endPacket();                    
@@ -275,7 +256,7 @@ void startHttpServer() {
                 "<modelNumber>3.1415</modelNumber>"
                 "<modelDescription>Belkin Plugin Socket 1.0</modelDescription>\r\n"
                 "<UDN>uuid:"+ persistent_uuid +"</UDN>"
-                "<serialNumber>+serial+</serialNumber>"
+                "<serialNumber>"+serial+"</serialNumber>"
                 "<binaryState>0</binaryState>"
                 "<serviceList>"
                   "<service>"
