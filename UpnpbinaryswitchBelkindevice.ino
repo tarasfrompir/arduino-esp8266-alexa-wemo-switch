@@ -15,6 +15,7 @@ const char* ssid = "homewifihome";  // CHANGE: Wifi name
 const char* password = "homewifi1234567890";  // CHANGE: Wifi password 
 String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
+String answer = "This is Belkin switch for Arduino with UPNP control";
 
 WiFiUDP UDP;
 IPAddress ipMulti(239, 255, 255, 250);
@@ -26,6 +27,7 @@ boolean wifiConnected = false;
 boolean relayState = false;
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
 String serial;
+String chipId;
 String persistent_uuid;
 boolean cannotConnectToWifi = false;
 
@@ -153,12 +155,12 @@ void respondToSearch() {
 void startHttpServer() {
     HTTP.on("/index.html", HTTP_GET, [](){
       Serial.println("Got Request index.html ...\n");
-      answer = "This is Belkin switch for Arduino with UPNP control";
+
         String statrespone = "off"; 
         if (relayState) {
           statrespone = "on"; 
         }
-      answer .= "The switch status " + statrespone;
+      answer = answer + " The switch status " + statrespone;
         HTTP.send(200, "text/plain", answer);
     });
 
