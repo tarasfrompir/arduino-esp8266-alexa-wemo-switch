@@ -66,10 +66,6 @@ void loop() {
       int packetSize = UDP.parsePacket();
       
       if(packetSize) {
-        //Serial.println("");
-        //Serial.print("Received packet of size ");
-        //Serial.println(packetSize);
-        //Serial.print("From ");
         IPAddress remote = UDP.remoteIP();
         
         for (int i =0; i < 4; i++) {
@@ -89,13 +85,10 @@ void loop() {
         }
 
         String request = packetBuffer;
-        //Serial.println("Request:");
-        //Serial.println(request);
-        
-        // Issue https://github.com/kakopappa/arduino-esp8266-alexa-wemo-switch/issues/24 fix
+
         if(request.indexOf("M-SEARCH") >= 0) {
             // Issue https://github.com/kakopappa/arduino-esp8266-alexa-multiple-wemo-switch/issues/22 fix
-             if((request.indexOf("urn:Belkin:device:**") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
+             if((request.indexOf("urn:schemas-upnp-org:device:BinaryLight:*") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
                 Serial.println("Responding to search request ...");
                 respondToSearch();
              }
@@ -118,7 +111,7 @@ void prepareIds() {
         (uint16_t)   chipId        & 0xff);
 
   serial = String(uuid);
-  persistent_uuid = "Socket-1_0-" + serial;
+  persistent_uuid = serial;
 }
 
 void respondToSearch() {
@@ -139,7 +132,7 @@ void respondToSearch() {
          "EXT:\r\n"
          "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
          "SERVER: ESP_8266, UPnP/1.0, Unspecified\r\n"
-         "ST: urn:Belkin:device:**\r\n"
+         "ST: urn:schemas-upnp-org:device:BinaryLight:*\r\n"
          "USN: uuid:" + persistent_uuid + "::urn:Belkin:device:**\r\n"
          "X-User-Agent: redsonic\r\n\r\n";
   
@@ -162,8 +155,8 @@ void startHttpServer() {
         HTTP.send(200, "text/plain", answer);
     });
 
-    HTTP.on("/upnp/control/basicevent1", HTTP_POST, []() {
-      Serial.println("########## Responding to  /upnp/control/basicevent1 ... ##########");      
+    HTTP.on("/SwitchPower/Event", HTTP_POST, []() {
+      Serial.println("########## Responding to  /SwitchPower/Event ... ##########");      
 
       //for (int x=0; x <= HTTP.args(); x++) {
       //  Serial.println(HTTP.arg(x));
@@ -196,7 +189,7 @@ void startHttpServer() {
     HTTP.on("/eventservice.xml", HTTP_GET, [](){
       Serial.println(" ########## Responding to eventservice.xml ... ########\n");
       
-      String eventservice_xml = "<scpd xmlns=\"urn:Belkin:service-1-0\">"
+      String eventservice_xml = "<scpd xmlns=\"urn:schemas-upnp-org:device-1-0\">"
         "<actionList>"
           "<action>"
             "<name>SetBinaryState</name>"
@@ -249,10 +242,10 @@ void startHttpServer() {
       String setup_xml = "<?xml version=\"1.0\"?>"
             "<root>"
              "<device>"
-                "<deviceType>urn:Belkin:device:controllee:1</deviceType>"
+                "<deviceType>urn:schemas-upnp-org:device:BinaryLight:1</deviceType>"
                 "<friendlyName>"+ friendlyName +"</friendlyName>"
-                "<manufacturer>Belkin International Inc.</manufacturer>"
-                "<modelName>Socket</modelName>"
+                "<manufacturer>OpenHand</manufacturer>"
+                "<modelName>Home binary switch</modelName>"
                 "<modelNumber>3.1415</modelNumber>"
                 "<modelDescription>Simple binary switch /modelDescription>\r\n"
                 "<UDN>uuid:"+ persistent_uuid +"</UDN>"
