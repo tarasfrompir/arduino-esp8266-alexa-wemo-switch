@@ -15,7 +15,7 @@ const char* ssid = "homewifihome";  // CHANGE: Wifi name
 const char* password = "homewifi1234567890";  // CHANGE: Wifi password 
 String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
-String answer = "This is simple switch for Arduino with UPNP control";        // CHANGE answer
+String answer = "This is Basic switch for Arduino with UPNP control.";
 
 WiFiUDP UDP;
 IPAddress ipMulti(239, 255, 255, 250);
@@ -27,6 +27,7 @@ boolean wifiConnected = false;
 boolean relayState = false;
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
 String serial;
+String chipId;
 String persistent_uuid;
 boolean cannotConnectToWifi = false;
 
@@ -86,10 +87,9 @@ void loop() {
         }
 
         String request = packetBuffer;
-
+    
         if(request.indexOf("M-SEARCH") >= 0) {
-            // Issue https://github.com/kakopappa/arduino-esp8266-alexa-multiple-wemo-switch/issues/22 fix
-             if((request.indexOf("urn:schemas-upnp-org:device:BinaryLight:1") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
+             if((request.indexOf("urn:schemas-upnp-org:device:**") > 0) || (request.indexOf("ssdp:all") > 0) || (request.indexOf("upnp:rootdevice") > 0)) {
                 Serial.println("Responding to search request ...");
                 respondToSearch();
              }
@@ -133,8 +133,8 @@ void respondToSearch() {
          "EXT:\r\n"
          "LOCATION: http://" + String(s) + ":80/setup.xml\r\n"
          "SERVER: ESP_8266, UPnP/1.0, Unspecified\r\n"
-         "ST: urn:schemas-upnp-org:device:BinaryLight:1\r\n"
-         "USN: uuid:" + persistent_uuid + "::urn:schemas-upnp-org:device:BinaryLight:1\r\n"
+         "ST: urn:schemas-upnp-org:device:**\r\n"
+         "USN: uuid:" + persistent_uuid + "::urn:schemas-upnp-org:device:**\r\n"
          "X-User-Agent: redsonic\r\n\r\n";
   
     UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
@@ -147,21 +147,19 @@ void respondToSearch() {
 void startHttpServer() {
     HTTP.on("/index.html", HTTP_GET, [](){
       Serial.println("Got Request index.html ...\n");
+
         String statrespone = "off"; 
         if (relayState) {
           statrespone = "on"; 
         }
-      answer = answer + "The switch status " + statrespone;
-        HTTP.send(200, "text/plain", answer);
+      answer = answer + " The switch status " + statrespone;
+      HTTP.send(200, "text/plain", answer);
+      answer = "This is Basic switch for Arduino with UPNP control.";
     });
 
-    HTTP.on("/SwitchPower/Event", HTTP_POST, []() {
-      Serial.println("########## Responding to  /SwitchPower/Event ... ##########");      
+    HTTP.on("/upnp/control/basicevent1", HTTP_POST, []() {
+      Serial.println("########## Responding to  /upnp/control/basicevent1 ... ##########");      
 
-      //for (int x=0; x <= HTTP.args(); x++) {
-      //  Serial.println(HTTP.arg(x));
-      //}
-  
       String request = HTTP.arg(0);      
       Serial.print("request:");
       Serial.println(request);
@@ -186,7 +184,7 @@ void startHttpServer() {
       HTTP.send(200, "text/plain", "");
     });
 
-    HTTP.on("/eventservice.xml", HTTP_GET, [](){
+    HTTP.on("/SwitchPower1.xml", HTTP_GET, [](){
       Serial.println(" ########## Responding to eventservice.xml ... ########\n");
       
       String eventservice_xml = "<scpd xmlns=\"urn:schemas-upnp-org:device-1-0\">"
@@ -244,19 +242,20 @@ void startHttpServer() {
              "<device>"
                 "<deviceType>urn:schemas-upnp-org:device:BinaryLight:1</deviceType>"
                 "<friendlyName>"+ friendlyName +"</friendlyName>"
-                "<manufacturer>OpenHand</manufacturer>"
-                "<modelName>Home binary switch</modelName>"
+                "<manufacturer>OpenHand Inc.</manufacturer>"
+                "<modelName>Binary Switch</modelName>"
                 "<modelNumber>3.1415</modelNumber>"
-                "<modelDescription>Simple binary switch /modelDescription>\r\n"
+                "<presentationURL>http://"+ String(s) + "/index.html </presentationURL>"
+                "<modelDescription>Home made binary switch</modelDescription>\r\n"
                 "<UDN>uuid:"+ persistent_uuid +"</UDN>"
-                "<serialNumber>"+serial+"</serialNumber>"
+                "<serialNumber>"+chipId+"</serialNumber>"
                 "<binaryState>0</binaryState>"
                 "<serviceList>"
                   "<service>"
-                      "<serviceType>urn:schemas-upnp-org:device:BinaryLight:1</serviceType>"
+                      "<serviceType>urn:schemas-upnp-org:service:SwitchPower:1</serviceType>"
                       "<serviceId>urn:upnp-org:serviceId:SwitchPower:1</serviceId>"
-                      "<controlURL>/SwitchPower/Control</controlURL>"
-                      "<eventSubURL>/SwitchPower/Event</eventSubURL>"
+                      "<controlURL>/upnp/control/basicevent1</controlURL>"
+                      "<eventSubURL>/upnp/event/basicevent1</eventSubURL>"
                       "<SCPDURL>/SwitchPower1.xml</SCPDURL>"
                   "</service>"
               "</serviceList>" 
@@ -358,7 +357,7 @@ void turnOnRelay() {
 
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device:BinaryLight:1\">\r\n"
+      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
       "<BinaryState>1</BinaryState>\r\n"
       "</u:SetBinaryStateResponse>\r\n"
       "</s:Body> </s:Envelope>";
@@ -375,7 +374,7 @@ void turnOffRelay() {
 
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device:BinaryLight:1\">\r\n"
+      "<u:SetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
       "<BinaryState>0</BinaryState>\r\n"
       "</u:SetBinaryStateResponse>\r\n"
       "</s:Body> </s:Envelope>";
@@ -390,7 +389,7 @@ void sendRelayState() {
   
   String body = 
       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body>\r\n"
-      "<u:GetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device:BinaryLight:1\">\r\n"
+      "<u:GetBinaryStateResponse xmlns:u=\"urn:schemas-upnp-org:device-1-0\">\r\n"
       "<BinaryState>";
       
   body += (relayState ? "1" : "0");
