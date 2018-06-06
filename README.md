@@ -20,49 +20,5 @@ To controlled this switch via Amazon Alexa.
 1. Download the code
 2. Change the WI-FI settings. 
 3. Flash 
-4. Scan for new devices in Alexa
-5. Say "turn on" box
-
-## Do you want to turn on / off your TV, AirCon (AC) using Amazon Alexa? Checkout my latest project https://irdevkit.com/
-
-### If you have issues discovering please consider using sinric smart home skill. 
-https://github.com/kakopappa/arduino-esp8266-alexa-wemo-switch/issues/7#issuecomment-355533848
-* [sinric.com](https://sinric.com) 
-
-##Using Sonoff##
-
-Sonoff - Thanks @joeman2116 (https://github.com/kakopappa/arduino-esp8266-alexa-wemo-switch/issues/6)
-
-Use a ftdi 3.3v as the programmer.
-I tried type as a generic 1meg flash but got reboot problems.
-So I used the nodemcu.9 choice.
-
-Change the ssid
-Change password
-Change device name to (your choice)
-
-Pins
-I use d6 for the relay and d7 for the led.(optional)
-
-If you want to control more than 1 switch checkout my other project
-https://github.com/kakopappa/arduino-esp8266-alexa-multiple-wemo-switch
-
-### Articles about the Wemos switch
-* [monkeytypewritr](https://medium.com/@monkeytypewritr/amazon-echo-esp8266-iot-a42076daafa5#.oc4od1xa0)
-
- 
-
-### Credits
-
-- makermusings - [GitHub](https://github.com/makermusings/fauxmo)
-
-### Developed By
-
-* Aruna Tennakoon
- * [paypal.me/arunat](http://paypal.me/arunat)
- * Bitcon ```1JnmhzTbW9MRb7FK7UReoWdUZ18MDn6aNv```
- * 3 beers from [dougstrickland](https://github.com/dougstrickland) - Thanks
- * 2 beers from Michael Berna
- * 1 beer Keg from Phillip Ryals
- * 5 beers from Steven Boger
- * 5 Kegs from Robert Paradiso
+сканируем устройство мажордомо модуль ссдпфиндер
+и используем по назначению.
