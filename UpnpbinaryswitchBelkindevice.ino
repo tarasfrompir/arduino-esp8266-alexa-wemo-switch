@@ -11,8 +11,8 @@ void turnOnRelay();
 void turnOffRelay();
 void sendRelayState();
 
-const char* ssid = "homewifihome";  // CHANGE: Wifi name
-const char* password = "homewifi1234567890";  // CHANGE: Wifi password 
+const char* ssid = "";  // CHANGE: Wifi name
+const char* password = "";  // CHANGE: Wifi password 
 String friendlyName = "kitchen light";        // CHANGE: name
 const int relayPin = 2;  // D1 pin. More info: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h#L49-L61
 String answer = "This is Belkin switch for Arduino with UPNP control";
